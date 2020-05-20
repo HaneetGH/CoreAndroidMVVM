@@ -24,7 +24,7 @@ public class MainActivity extends BaseActivity {
     private MainActivityViewModel viewModel;
     FlikrImageModel flikrImageModel = new FlikrImageModel();
     int selectedPhoto = -1;
-    boolean isFirstImageFetch = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +60,11 @@ public class MainActivity extends BaseActivity {
                                 viewModel.downloadAll(flikrImageModel.getPhotos().getPhoto());
                             }
                             if (eventTask.task == Task.DOWNLOADING) {
-                                if (!isFirstImageFetch) {
+
                                     ClickHandler clickHandler = new ClickHandler();
                                     clickHandler.next();
-                                    isFirstImageFetch = true;
-                                }
+
+
                                 Log.d("Downloading Complete", "########");
                             }
                             if (eventTask.task == Task.LRUBITMAP) {

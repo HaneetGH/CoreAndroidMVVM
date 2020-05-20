@@ -91,7 +91,7 @@ public class MainActivity extends BaseActivity {
 
         public void next() {
 
-            if (flikrImageModel == null||flikrImageModel.getPhotos()==null||flikrImageModel.getPhotos().getPhoto()==null)
+            if (flikrImageModel == null || flikrImageModel.getPhotos() == null || flikrImageModel.getPhotos().getPhoto() == null)
                 return;
             ++selectedPhoto;
             if (selectedPhoto > flikrImageModel.getPhotos().getPhoto().size() - 1) {
@@ -106,7 +106,7 @@ public class MainActivity extends BaseActivity {
 
         public void previous() {
             --selectedPhoto;
-            if (flikrImageModel == null||flikrImageModel.getPhotos()==null||flikrImageModel.getPhotos().getPhoto()==null)
+            if (flikrImageModel == null || flikrImageModel.getPhotos() == null || flikrImageModel.getPhotos().getPhoto() == null)
                 return;
             if (selectedPhoto < 0) {
                 selectedPhoto = -1;

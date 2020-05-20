@@ -108,21 +108,22 @@ public class MainActivityRepository {
         }.execute();
     }
 
-    public static void downloadAllImages(List<Photo> photos, final MutableLiveData<EventTask> eventTaskMutableLiveData) {
+    public static void downloadAllImages(final List<Photo> photos, final MutableLiveData<EventTask> eventTaskMutableLiveData) {
         eventTaskMutableLiveData.postValue(EventTask.loading(Task.DOWNLOADING));
-        for (final Photo photo : photos) {
-            try {
-                final URL url = new URL("https://farm" + photo.getFarm() + ".staticflickr.com/" + photo.getServer() + "/" + photo.getId() + "_" + photo.getSecret() + "_q.jpg");
-                Log.d("URL", url.toString());
-                new AsyncTask<String, String, Bitmap>() {
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        eventTaskMutableLiveData.postValue(EventTask.loading(Task.DOWNLOADING));
-                    }
 
-                    @Override
-                    protected Bitmap doInBackground(String... params) {
+        new AsyncTask<String, String, String>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                eventTaskMutableLiveData.postValue(EventTask.loading(Task.DOWNLOADING));
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                for (final Photo photo : photos) {
+                    try {
+                        final URL url = new URL("https://farm" + photo.getFarm() + ".staticflickr.com/" + photo.getServer() + "/" + photo.getId() + "_" + photo.getSecret() + "_q.jpg");
+                        Log.d("URL", url.toString());
                         Bitmap image = null;
                         try {
                             image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
@@ -130,42 +131,32 @@ public class MainActivityRepository {
                             e.printStackTrace();
                         }
                         // Parse the JSON using the library of your choice
-                        return image;
-                    }
-
-                    @Override
-                    protected void onCancelled() {
-                        super.onCancelled();
-                        eventTaskMutableLiveData.postValue(EventTask.error(Task.DOWNLOADING));
-                    }
-
-                    @Override
-                    protected void onPostExecute(Bitmap data) {
-                        super.onPostExecute(data);
-                        lruCacheTool.addBitmapToMemoryCache(photo.getFarm(), photo.getServer(), photo.getId(), photo.getSecret(), data);
-                        eventTaskMutableLiveData.postValue(EventTask.success(data, Task.DOWNLOADING));
+                        lruCacheTool.addBitmapToMemoryCache(photo.getFarm(), photo.getServer(), photo.getId(), photo.getSecret(), image);
+                    } catch (Exception e) {
 
                     }
-                }.execute();
+                }
+                return "complete";
+            }
 
-
-            } catch (IOException e) {
-                System.out.println(e);
+            @Override
+            protected void onCancelled() {
+                super.onCancelled();
                 eventTaskMutableLiveData.postValue(EventTask.error(Task.DOWNLOADING));
-                break;
             }
-           /* try {
-                Thread.sleep(2000);
+
+            @Override
+            protected void onPostExecute(String data) {
+                super.onPostExecute(data);
+
+                eventTaskMutableLiveData.postValue(EventTask.success(data, Task.DOWNLOADING));
+
             }
-            catch (Exception e)
-            {
+        }.execute();
 
-            }*/
-
-        }
-        //  eventTaskMutableLiveData.postValue(EventTask.success(null, Task.ALLDOWNLOADCOMPLETE));
 
     }
+
 
     public static void getNextImage(Photo photo, MutableLiveData<EventTask> eventTaskMutableLiveData) {
 

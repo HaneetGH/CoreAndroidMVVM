@@ -3,7 +3,6 @@ package com.technorapper.coreandroidmvvm.network.repository;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.JsonReader;
 import android.util.Log;
 
 import androidx.collection.LruCache;
@@ -19,21 +18,12 @@ import com.technorapper.coreandroidmvvm.network.tool.JSONParser;
 import com.technorapper.coreandroidmvvm.tool.LRUCacheTool;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.technorapper.coreandroidmvvm.network.global.SystemVariable.CONNECTION_TIMEOUT;
-import static com.technorapper.coreandroidmvvm.network.global.SystemVariable.READ_TIMEOUT;
-import static com.technorapper.coreandroidmvvm.network.global.SystemVariable.REQUEST_METHOD;
 
 public class MainActivityRepository {
     private LruCache<String, Bitmap> memoryCache;

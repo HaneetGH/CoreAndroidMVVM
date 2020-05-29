@@ -4,8 +4,6 @@
 
 Clean MVVM Boilerplate with no thirdparty lib.
 
-Hi,
-
 Previously, I Had posted a boilerplate project for android using kotlin
 which has all Third-party libs with MVVM architecture. We need these
 type of boilerplates to start a quick enterprise-level project but,
@@ -18,8 +16,6 @@ Java) which uses no third-party lib.
 It can help you to understand how to use async task with MVVM, Android
 collection's LruCache etc..
 
-<h3>Click below.</h3>
-<a href="https://github.com/HaneetGH/CoreAndroidMVVM"> MVVM Boiler-Plate Without Libs</href>
 
 <h6> I'm also sharing my Project which uses third-party libs.</h6>
 <a href="https://github.com/HaneetGH/KotlinAndroidBase">MVVM Boiler-Plate With Libs</href>

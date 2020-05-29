@@ -20,10 +20,10 @@ collection's LruCache etc..
 
 <h3>Click below.</h3>
 <a href="https://github.com/HaneetGH/CoreAndroidMVVM"> MVVM Boiler-Plate Without Libs</href>
--------------------------------------------------------------
+
 <h6> I'm also sharing my Project which uses third-party libs.</h6>
 <a href="https://github.com/HaneetGH/KotlinAndroidBase">MVVM Boiler-Plate With Libs</href>
----------------------------------------------------------------
+
 
 
 # I appreciate any feedback, correction or ideas.

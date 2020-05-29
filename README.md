@@ -17,7 +17,7 @@ It can help you to understand how to use async task with MVVM, Android
 collection's LruCache etc..
 
 
-<h6> I'm also sharing my Project which uses third-party libs.</h6>
+<h6> I'm also sharing link to my Project which uses third-party libs.</h6>
 <a href="https://github.com/HaneetGH/KotlinAndroidBase">MVVM Boiler-Plate With Libs</href>
 
 

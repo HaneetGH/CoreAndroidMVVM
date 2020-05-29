@@ -56,7 +56,7 @@ public class MainActivity extends BaseActivity {
                             if (eventTask.task == Task.FLIKRURL) {
                                 flikrImageModel = (FlikrImageModel) eventTask.data;
 
-                                viewModel.downloadAll(flikrImageModel.getPhotos().getPhoto());
+                                viewModel.downloadImageThread(flikrImageModel.getPhotos().getPhoto());
                             }
                             if (eventTask.task == Task.DOWNLOADING) {
                                 Log.d("Downloading Complete", "########");

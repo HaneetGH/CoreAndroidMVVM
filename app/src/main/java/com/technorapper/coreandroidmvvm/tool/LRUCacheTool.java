@@ -1,28 +1,24 @@
 package com.technorapper.coreandroidmvvm.tool;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 
 import androidx.collection.LruCache;
 
-import com.technorapper.coreandroidmvvm.helper.EventTask;
-import com.technorapper.coreandroidmvvm.helper.Task;
 import com.technorapper.coreandroidmvvm.network.model.flikr.Photo;
+import com.technorapper.coreandroidmvvm.network.repository.LRUCacheRepository;
 
-import java.io.IOException;
-import java.net.URL;
+import org.jetbrains.annotations.NotNull;
 
 import static com.technorapper.coreandroidmvvm.network.global.SystemVariable.CACHESIZE;
 
 public class LRUCacheTool {
-    private LruCache<String, Bitmap> memoryCache;
+    public static LruCache<String, Bitmap> memoryCache;
 
     public LRUCacheTool() {
 
         memoryCache = new LruCache<String, Bitmap>(CACHESIZE) {
             @Override
-            protected int sizeOf(String key, Bitmap bitmap) {
+            protected int sizeOf(@NotNull String key, @NotNull Bitmap bitmap) {
                 // The cache size will be measured in kilobytes rather than
                 // number of items.
                 return bitmap.getByteCount() / 1024;
@@ -32,7 +28,7 @@ public class LRUCacheTool {
     }
 
 
-    public void addBitmapToMemoryCache(Integer farm, String server, String id, String secret, Bitmap bitmap) {
+    public static void addBitmapToMemoryCache(Integer farm, String server, String id, String secret, Bitmap bitmap) {
         if (bitmap != null) {
             if (getBitmapFromMemCache(farm, server, id, secret) == null) {
                 memoryCache.put(farm + server + id + secret, bitmap);
@@ -40,42 +36,24 @@ public class LRUCacheTool {
         }
     }
 
-    public Bitmap getBitmapFromMemCacheOrDownload(final Integer farm, final String server, final String id, final String secret) {
-        Bitmap bitmap = memoryCache.get(farm + server + id + secret);
+
+    public static Bitmap getBitmapFromMemCache(final Integer farm, final String server, final String id, final String secret) {
+
+        return memoryCache.get(farm + server + id + secret);
+    }
+
+    public static Bitmap getBitmapFromMemCacheOrDownload(Photo photo) {
+        Bitmap bitmap = memoryCache.get(photo.getFarm() + photo.getServer() + photo.getId() + photo.getSecret());
         if (bitmap == null) {
 
-
-            new AsyncTask<String, String, Bitmap>() {
-                @Override
-                protected Bitmap doInBackground(String... params) {
-                    Bitmap image = null;
-                    try {
-                        URL url = new URL("https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_q.jpg");
-                        image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-
-                    } catch (IOException e) {
-                        System.out.println(e);
-                    }
-                    // Parse the JSON using the library of your choice
-                    return image;
-                }
-
-                @Override
-                protected void onPostExecute(Bitmap image) {
-                    super.onPostExecute(image);
-                    addBitmapToMemoryCache(farm, server, id, secret, image);
-
-                }
-            }.execute();
-
+            try {
+                LRUCacheRepository.downloadThisImageWithOwnThread(photo);
+            } catch (Exception e) {
+                return null;
+            }
             return null;
         } else
             return bitmap;
     }
-
-    public Bitmap getBitmapFromMemCache(final Integer farm, final String server, final String id, final String secret) {
-        Bitmap bitmap = memoryCache.get(farm + server + id + secret);
-
-        return bitmap;
-    }
 }
+

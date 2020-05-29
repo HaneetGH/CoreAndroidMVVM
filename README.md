@@ -21,7 +21,6 @@ collection's LruCache etc..
 <a href="https://github.com/HaneetGH/KotlinAndroidBase">MVVM Boiler-Plate With Libs</href>
 
 
-
 # I appreciate any feedback, correction or ideas.
 
 

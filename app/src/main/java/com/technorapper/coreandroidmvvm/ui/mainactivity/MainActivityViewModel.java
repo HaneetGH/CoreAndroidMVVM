@@ -1,24 +1,14 @@
 package com.technorapper.coreandroidmvvm.ui.mainactivity;
 
 import android.os.AsyncTask;
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
 import com.technorapper.coreandroidmvvm.helper.EventTask;
 import com.technorapper.coreandroidmvvm.helper.Task;
-import com.technorapper.coreandroidmvvm.network.api.ApiCall;
 import com.technorapper.coreandroidmvvm.network.model.flikr.FlikrImageModel;
 import com.technorapper.coreandroidmvvm.network.model.flikr.Photo;
-import com.technorapper.coreandroidmvvm.network.model.flikr.Photos;
 import com.technorapper.coreandroidmvvm.network.repository.MainActivityRepository;
-import com.technorapper.coreandroidmvvm.network.tool.JSONParser;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivityViewModel extends ViewModel {

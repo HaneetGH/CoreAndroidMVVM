@@ -1,22 +1,20 @@
 package com.technorapper.coreandroidmvvm.ui.mainactivity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.technorapper.coreandroidmvvm.R;
 import com.technorapper.coreandroidmvvm.databinding.ActivityMainBinding;
 import com.technorapper.coreandroidmvvm.helper.EventTask;
-import com.technorapper.coreandroidmvvm.helper.Status;
 import com.technorapper.coreandroidmvvm.helper.Task;
 import com.technorapper.coreandroidmvvm.network.model.flikr.FlikrImageModel;
-import com.technorapper.coreandroidmvvm.network.repository.MainActivityRepository;
 import com.technorapper.coreandroidmvvm.ui.base.BaseActivity;
 
 public class MainActivity extends BaseActivity {
@@ -42,8 +40,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void attachViewModel() {
         viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        viewModel.getListImages();
-
+        viewModel.getAllListImages();
+        binding.setImage(getResources().getDrawable(R.drawable.loader));
         viewModel.eventTaskMutableLiveData.observe(this, new Observer<EventTask>() {
             @Override
             public void onChanged(EventTask eventTask) {
@@ -57,21 +55,18 @@ public class MainActivity extends BaseActivity {
                         if (eventTask.data != null) {
                             if (eventTask.task == Task.FLIKRURL) {
                                 flikrImageModel = (FlikrImageModel) eventTask.data;
+
                                 viewModel.downloadAll(flikrImageModel.getPhotos().getPhoto());
                             }
                             if (eventTask.task == Task.DOWNLOADING) {
-
-                                    ClickHandler clickHandler = new ClickHandler();
-                                    clickHandler.next();
-
-
+                                Log.d("Downloading Complete", "########");
+                            }
+                            if (eventTask.task == Task.FIRSTIMAGE) {
+                                ClickHandler clickHandler = new ClickHandler();
+                                clickHandler.next();
                                 Log.d("Downloading Complete", "########");
                             }
                             if (eventTask.task == Task.LRUBITMAP) {
-                                binding.setImage(new BitmapDrawable(getResources(), (Bitmap) eventTask.data));
-                                Log.d("BITMAP", "########");
-                            }
-                            if (eventTask.task == Task.ALLDOWNLOADCOMPLETE) {
                                 binding.setImage(new BitmapDrawable(getResources(), (Bitmap) eventTask.data));
                                 Log.d("BITMAP", "########");
                             }
@@ -83,6 +78,7 @@ public class MainActivity extends BaseActivity {
                         break;
                 }
 
+
             }
         });
     }
@@ -90,7 +86,6 @@ public class MainActivity extends BaseActivity {
     public class ClickHandler {
 
         public void next() {
-
             if (flikrImageModel == null || flikrImageModel.getPhotos() == null || flikrImageModel.getPhotos().getPhoto() == null)
                 return;
             ++selectedPhoto;
@@ -99,8 +94,10 @@ public class MainActivity extends BaseActivity {
                 binding.setPrevDisable("");
                 binding.setNextDisable("Disable");
 
-            } else
+            } else {
+                binding.setImage(getResources().getDrawable(R.drawable.loader));
                 viewModel.getBitmap(flikrImageModel.getPhotos().getPhoto().get(selectedPhoto));
+            }
 
         }
 
@@ -112,9 +109,10 @@ public class MainActivity extends BaseActivity {
                 selectedPhoto = -1;
                 binding.setPrevDisable("Disable");
                 binding.setNextDisable("");
-            } else
+            } else {
+                binding.setImage(getResources().getDrawable(R.drawable.loader));
                 viewModel.getBitmap(flikrImageModel.getPhotos().getPhoto().get(selectedPhoto));
-
+            }
         }
     }
 }

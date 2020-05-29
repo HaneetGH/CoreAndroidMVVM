@@ -44,5 +44,7 @@ public class EventTask<T> {
         return new EventTask<>(task, Status.LOADING, null, null);
     }
 
-
+    public static <T> EventTask<T> message(@NonNull T data, Task task) {
+        return new EventTask<>(task, Status.SUCCESS, data, null);
+    }
 }

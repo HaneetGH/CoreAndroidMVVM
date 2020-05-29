@@ -110,6 +110,7 @@ public class MainActivityRepository {
 
             @Override
             protected String doInBackground(String... params) {
+                boolean isForFirstImage = true;
                 for (final Photo photo : photos) {
                     try {
                         final URL url = new URL("https://farm" + photo.getFarm() + ".staticflickr.com/" + photo.getServer() + "/" + photo.getId() + "_" + photo.getSecret() + "_q.jpg");
@@ -122,6 +123,10 @@ public class MainActivityRepository {
                         }
                         // Parse the JSON using the library of your choice
                         lruCacheTool.addBitmapToMemoryCache(photo.getFarm(), photo.getServer(), photo.getId(), photo.getSecret(), image);
+                        if (isForFirstImage) {
+                            eventTaskMutableLiveData.postValue(EventTask.message(photo, Task.FIRSTIMAGE));
+                            isForFirstImage = false;
+                        }
                     } catch (Exception e) {
 
                     }
@@ -154,4 +159,46 @@ public class MainActivityRepository {
     }
 
 
+    public static FlikrImageModel processImageListRequest() {
+        FlikrImageModel data = new FlikrImageModel();
+        Photos photos = new Photos();
+        Photo photo;
+        List<Photo> photoList = new ArrayList<>();
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = jsonParser.getJSONFromUrl(ApiCall.BASEURL + ApiCall.IMAGELIST);
+        try {
+
+
+            Log.d("response", jsonObject.toString());
+            JSONObject jsonObjPhotos = jsonObject.getJSONObject("photos");
+            photos.setPage(jsonObjPhotos.getInt("page"));
+            photos.setPages(jsonObjPhotos.getInt("pages"));
+            photos.setTotal(jsonObjPhotos.getString("total"));
+            photos.setPerpage(jsonObjPhotos.getInt("perpage"));
+
+            JSONArray jsonArrayPhoto = jsonObjPhotos.getJSONArray("photo");
+            for (int i = 0; i < jsonArrayPhoto.length() - 1; i++) {
+                JSONObject JsonObj = jsonArrayPhoto.getJSONObject(i);
+                photo = new Photo();
+                photo.setId(JsonObj.getString("id"));
+
+                photo.setFarm(JsonObj.getInt("farm"));
+                photo.setIsfamily(JsonObj.getInt("isfamily"));
+                photo.setIspublic(JsonObj.getInt("ispublic"));
+                photo.setIsfriend(JsonObj.getInt("isfriend"));
+
+                photo.setOwner(JsonObj.getString("owner"));
+                photo.setSecret(JsonObj.getString("secret"));
+                photo.setServer(JsonObj.getString("server"));
+                photo.setTitle(JsonObj.getString("title"));
+                photoList.add(photo);
+            }
+            photos.setPhoto(photoList);
+            data.setPhotos(photos);
+            return data;
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
 }

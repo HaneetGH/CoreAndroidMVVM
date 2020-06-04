@@ -36,6 +36,7 @@
             android:layout_height="wrap_content" />
 
         <ImageView
+            android:id="@+id/img"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_gravity="center"
@@ -48,6 +49,7 @@
             android:weightSum="1">
 
             <Button
+                android:id="@+id/btnPrev"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
@@ -55,6 +57,7 @@
                 android:text="@{`Previous `+prevDisable}" />
 
             <Button
+                android:id="@+id/btnNext"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"

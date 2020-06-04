@@ -23,3 +23,10 @@ jobs:
           name: app
           path: app/build/outputs/apk/debug/app-debug.apk
 
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          target: default
+          arch: x86
+          script: ./gradlew connectedCheck --stacktrace
+

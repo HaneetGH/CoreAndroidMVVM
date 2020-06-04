@@ -23,10 +23,8 @@ jobs:
           name: app
           path: app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Unit Test
-          run: ./gradlew testDebugUnitTest
-          continue-on-error: true # IMPORTANT: allow pipeline to continue to Android Test Report step
-
-            - name: Android Test Report
-              uses: asadmansr/android-test-report-action@v1.2.0
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew connectedCheck --stacktrace
 

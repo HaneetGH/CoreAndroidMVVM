@@ -23,6 +23,7 @@ jobs:
           name: app
           path: app/build/outputs/apk/debug/app-debug.apk
 
+
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 28

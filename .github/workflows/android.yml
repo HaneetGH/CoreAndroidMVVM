@@ -23,7 +23,7 @@ jobs:
           name: app
           path: app/build/outputs/apk/debug/app-debug.apk
 
-      - uses: reactivecircus/android-emulator-runner@v2
+      - uses: cangol/android-emulator:latest
         with:
           api-level: 29
           target: default

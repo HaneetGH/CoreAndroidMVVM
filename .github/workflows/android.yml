@@ -8,7 +8,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        api-level: [21, 23, 29]
+        target: [default, google_apis]
     steps:
       - uses: actions/checkout@v1
       - name: set up JDK 1.8
@@ -25,6 +28,9 @@ jobs:
 
       - uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          arch: x86_64
+          profile: Nexus 6
           script: ./gradlew connectedCheck --stacktrace
 

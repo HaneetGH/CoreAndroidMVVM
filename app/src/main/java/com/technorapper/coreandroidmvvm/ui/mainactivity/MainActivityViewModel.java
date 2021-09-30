@@ -25,47 +25,58 @@ public class MainActivityViewModel extends ViewModel {
 
 
     void downloadImageThread(final List<Photo> photos) {
-
-        new AsyncTask<String, String, String>() {
+        Thread thread = new Thread() {
             @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                eventTaskMutableLiveData.postValue(EventTask.loading(Task.DOWNLOADING));
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-                boolean isForFirstImage = true;
-                for (final Photo photo : photos) {
-                    try {
-                        Bitmap image = MainActivityRepository.downloadThisImage(photo);
-                        // Parse the JSON using the library of your choice
-                        lruCacheTool.addBitmapToMemoryCache(photo.getFarm(), photo.getServer(), photo.getId(), photo.getSecret(), image);
-                        if (isForFirstImage) {
-                            eventTaskMutableLiveData.postValue(EventTask.message(photo, Task.FIRSTIMAGE));
-                            isForFirstImage = false;
+            public void run() {
+                try {
+                    new AsyncTask<String, String, String>() {
+                        @Override
+                        protected void onPreExecute() {
+                            super.onPreExecute();
+                            eventTaskMutableLiveData.postValue(EventTask.loading(Task.DOWNLOADING));
                         }
-                    } catch (Exception e) {
 
-                    }
+                        @Override
+                        protected String doInBackground(String... params) {
+                            boolean isForFirstImage = true;
+                            for (final Photo photo : photos) {
+                                try {
+                                    Bitmap image = MainActivityRepository.downloadThisImage(photo);
+                                    // Parse the JSON using the library of your choice
+                                    lruCacheTool.addBitmapToMemoryCache(photo.getFarm(), photo.getServer(), photo.getId(), photo.getSecret(), image);
+                                    if (isForFirstImage) {
+                                        eventTaskMutableLiveData.postValue(EventTask.message(photo, Task.FIRSTIMAGE));
+                                        isForFirstImage = false;
+                                    }
+                                } catch (Exception e) {
+
+                                }
+                            }
+                            return "complete";
+                        }
+
+                        @Override
+                        protected void onCancelled() {
+                            super.onCancelled();
+                            eventTaskMutableLiveData.postValue(EventTask.error(Task.DOWNLOADING));
+                        }
+
+                        @Override
+                        protected void onPostExecute(String data) {
+                            super.onPostExecute(data);
+
+                            eventTaskMutableLiveData.postValue(EventTask.success(data, Task.DOWNLOADING));
+
+                        }
+                    }.execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                return "complete";
             }
+        };
 
-            @Override
-            protected void onCancelled() {
-                super.onCancelled();
-                eventTaskMutableLiveData.postValue(EventTask.error(Task.DOWNLOADING));
-            }
+        thread.start();
 
-            @Override
-            protected void onPostExecute(String data) {
-                super.onPostExecute(data);
-
-                eventTaskMutableLiveData.postValue(EventTask.success(data, Task.DOWNLOADING));
-
-            }
-        }.execute();
     }
 
     void getBitmap(Photo photo) {
